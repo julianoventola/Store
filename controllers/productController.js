@@ -15,11 +15,12 @@ exports.storeProduct = (req, res) => {
 };
 
 exports.getProduct = (req, res) => {
-  const products = Product.fetchAll();
-  // Rendering pug template
-  res.render('shop', {
-    products,
-    docTitle: 'Shop',
-    path: '/',
+  Product.fetchAll(products => {
+    // Rendering pug template
+    res.render('shop', {
+      products,
+      docTitle: 'Shop',
+      path: '/',
+    });
   });
 };
