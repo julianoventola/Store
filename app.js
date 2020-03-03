@@ -5,6 +5,7 @@ const routes = require('./routes/routes');
 // Create server
 const app = express();
 
+// Pug template engine
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 // Static css folder for pages
 app.use(express.static(path.resolve('./public')));
 
+// --> ROUTES <--
 app.use(routes);
 
 // Listen to port 3000

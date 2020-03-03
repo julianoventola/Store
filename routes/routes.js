@@ -1,8 +1,7 @@
 const express = require('express');
-
 const router = express.Router();
-
 const productController = require('../controllers/productController');
+const errorController = require('../controllers/errorController');
 
 // PRODUCTS
 router.get('/admin/add-product', productController.getAddProduct);
@@ -12,8 +11,6 @@ router.post('/admin/add-product', productController.storeProduct);
 router.get('/', productController.getProduct);
 
 // Route for 404 cases
-router.get('*', (req, res) => {
-  res.status(404).render('404');
-});
+router.get('*', errorController.get404page);
 
 module.exports = router;

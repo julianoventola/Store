@@ -1,4 +1,4 @@
-const products = [];
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res) => {
   // Rendering pug template
@@ -9,12 +9,13 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.storeProduct = (req, res) => {
-  products.push({ title: req.body.title });
-
+  const product = new Product(req.body.title);
+  product.save();
   res.redirect('/');
 };
 
 exports.getProduct = (req, res) => {
+  const products = Product.fetchAll();
   // Rendering pug template
   res.render('shop', {
     products,
