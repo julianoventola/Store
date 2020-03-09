@@ -21,10 +21,24 @@ exports.getProducts = (req, res) => {
   });
 };
 
+exports.getProductById = (req, res) => {
+  const { productId } = req.params;
+  Product.findById(productId, product => {
+    console.log(product);
+  });
+};
+
 exports.getCart = (req, res) => {
   res.render('cart', {
     docTitle: 'Your cart',
     path: '/cart',
+  });
+};
+
+exports.getOrders = (req, res) => {
+  res.render('orders', {
+    docTitle: 'Orders',
+    path: '/orders',
   });
 };
 

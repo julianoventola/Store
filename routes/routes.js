@@ -12,7 +12,9 @@ router.get('/admin/products', adminController.getProducts);
 // MAIN - SHOP
 router.get('/', productController.getIndex);
 router.get('/products', productController.getProducts);
+router.get('/products/:productId', productController.getProductById);
 router.get('/cart', productController.getCart);
+router.get('/orders', productController.getOrders);
 router.get('/checkout', productController.getCheckout);
 
 // Route for 404 cases
