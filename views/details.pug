@@ -1,0 +1,16 @@
+//- Uses the main layout to render page
+extends layouts/main-layout.pug
+
+block content
+  main.centered
+    h1 #{product.title}
+    hr
+    div
+      - var url = product.imageUrl
+      - var imageName = product.title
+      img(src=url alt=imageName)
+    h2 #{product.price}
+    p #{product.description}
+    form(action="/cart" method="post")
+      button.btn(type="submit") Add to Cart
+    a.btn(href="/products") Back to Products

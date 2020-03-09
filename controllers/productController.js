@@ -24,7 +24,11 @@ exports.getProducts = (req, res) => {
 exports.getProductById = (req, res) => {
   const { productId } = req.params;
   Product.findById(productId, product => {
-    console.log(product);
+    res.render('details', {
+      product,
+      docTitle: product.title,
+      path: '/products',
+    });
   });
 };
 
