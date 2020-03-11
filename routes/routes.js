@@ -7,6 +7,8 @@ const errorController = require('../controllers/errorController');
 // ADMIN - PRODUCTS
 router.get('/admin/add-product', adminController.getAddProduct);
 router.post('/admin/add-product', adminController.storeProduct);
+router.get('/admin/edit-product/:productId', adminController.getUpdateProduct);
+router.post('/admin/edit-product/', adminController.updateProduct);
 router.get('/admin/products', adminController.getProducts);
 
 // MAIN - SHOP
@@ -14,6 +16,7 @@ router.get('/', productController.getIndex);
 router.get('/products', productController.getProducts);
 router.get('/products/:productId', productController.getProductById);
 router.get('/cart', productController.getCart);
+router.post('/cart', productController.postCart);
 router.get('/orders', productController.getOrders);
 router.get('/checkout', productController.getCheckout);
 

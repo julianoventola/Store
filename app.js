@@ -6,8 +6,8 @@ const routes = require('./routes/routes');
 const app = express();
 
 // Pug template engine
-app.set('view engine', 'pug');
 app.set('views', 'views');
+app.set('view engine', 'pug');
 
 // UrlEncoded for form's data
 app.use(express.urlencoded({ extended: false }));

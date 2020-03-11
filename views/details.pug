@@ -13,4 +13,6 @@ block content
     p #{product.description}
     form(action="/cart" method="post")
       button.btn(type="submit") Add to Cart
+      - var productId = product.id
+      input(type="hidden", name="productId" value=productId)
     a.btn(href="/products") Back to Products

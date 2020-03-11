@@ -24,6 +24,9 @@ block content
             div.card__actions
               - var id = product.id
               a.btn(href="/products/"+id) Details
-              button.btn Add to Cart
+              form(action="/cart" method="post")
+                button.btn(type="submit") Add to Cart
+                - var productId = product.id
+                input(type="hidden", name="productId" value=productId)
     else
       h1 Add a new product! 

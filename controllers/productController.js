@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 exports.getIndex = (req, res) => {
   Product.fetchAll(products => {
     // Rendering pug template
@@ -33,6 +34,17 @@ exports.getProductById = (req, res) => {
 };
 
 exports.getCart = (req, res) => {
+  res.render('cart', {
+    docTitle: 'Your cart',
+    path: '/cart',
+  });
+};
+
+exports.postCart = (req, res) => {
+  const { productId } = req.body;
+  Product.findById(productId, product => {
+    Cart.addProduct(productId, product.price);
+  });
   res.render('cart', {
     docTitle: 'Your cart',
     path: '/cart',

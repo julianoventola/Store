@@ -7,14 +7,37 @@ block styles
 
 block content
   main
-    form.product-form(action="/admin/add-product" method="POST")
-      .form-control
-        label(for="title") Title
-        input(type="text" name="title")#title
-        label(for="imageUrl") Image URL
-        input(type="text" name="imageUrl")#imageUrl
-        label(for="price") Price
-        input(type="number" name="price" step="0.01")#price
-        label(for="description") Description
-        textarea#description(name="description", cols="30", rows="5")
-      button.btn(type="submit") Add Product
+    //- Check if user is trying to edit product
+    //- ADD PRODUCT
+    if !editing
+      form.product-form(action="/admin/add-product" method="POST")
+        .form-control
+          label(for="title") Title 
+          input(type="text" name="title")#title
+          label(for="imageUrl") Image URL
+          input(type="text" name="imageUrl")#imageUrl
+          label(for="price") Price
+          input(type="number" name="price" step="0.01")#price
+          label(for="description") Description
+          textarea#description(name="description", cols="30", rows="5")
+        button.btn(type="submit") Add Product
+    else
+      //- EDIT PRODUCT
+      form.product-form(action="/admin/edit-product" method="POST")
+        .form-control
+          - var productId = product.id
+          input(type="hidden", name="productId" value=productId)
+          - var title = product.title
+          label(for="title") Title 
+          input(type="text" name="title" value=title)#title
+          - var image = product.imageUrl
+          label(for="imageUrl") Image URL
+          input(type="text" name="imageUrl" value=image)#imageUrl
+          - var price = product.price
+          label(for="price") Price
+          input(type="number" name="price" step="0.01" value=price)#price
+          - var description = product.description
+          label(for="description") Description
+          textarea#description(name="description", cols="30", rows="5")=description
+        button.btn(type="submit") Update Product
+        a.btn(href="/admin/products") Back
