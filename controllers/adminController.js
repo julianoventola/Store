@@ -44,6 +44,12 @@ exports.updateProduct = (req, res) => {
   res.redirect('/admin/products');
 };
 
+exports.deleteProduct = (req, res) => {
+  const { productId } = req.body;
+  Product.deleteById(productId);
+  res.redirect('/admin/products');
+};
+
 exports.getProducts = (req, res) => {
   Product.fetchAll(products => {
     // Rendering pug template

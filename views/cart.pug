@@ -2,4 +2,14 @@
 extends layouts/main-layout.pug
 
 block content
-  h1 Cart
+  main
+    //- Check if there is any product
+    if products.length > 0
+      each product in products
+        p #{product.productData.title} (#{product.qty})    
+        form(action="/cart-delete-item" method="post")
+          button.btn(type="submit") Delete
+          - var productId = product.productData.id
+          input(type="hidden", name="productId" value=productId)
+    else
+      h1 Your cart is empty

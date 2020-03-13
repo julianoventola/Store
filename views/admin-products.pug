@@ -24,7 +24,8 @@ block content
             div.card__actions
               - var productId = product.id
               a.btn(href="/admin/edit-product/"+productId) Edit
-           
-              button.btn Delete
+              form(action="/admin/delete-product/" method="post")
+                input(type="hidden", name="productId" value=productId)
+                button.btn(type="submit") Delete
     else
       h1 Add a new product! 
