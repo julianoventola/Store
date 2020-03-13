@@ -3,13 +3,17 @@ const Sequelize = require('sequelize');
 const sequelizeConn = require('../config/database');
 
 // Model name / Model fields
-const Cart = sequelizeConn.define('cart', {
+const CartItem = sequelizeConn.define('cartItem', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
+  quantity: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
 });
 
-module.exports = Cart;
+module.exports = CartItem;

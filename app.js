@@ -6,6 +6,8 @@ const routes = require('./routes/routes');
 const sequelizeConn = require('./config/database'); // Sequelize connection
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 // Create server
 const app = express();
@@ -38,11 +40,15 @@ app.use(routes);
 // Model's relationship
 Product.belongsTo(User), { constraints: true, onDelete: 'CASCADE' };
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelizeConn
   // 'force' will rewrite the models - not indicated in production!
-  //.sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  //.sync()
   .then(() => {
     return User.findByPk(1);
   })
