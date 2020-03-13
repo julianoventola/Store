@@ -113,3 +113,11 @@ main {
   background-color: #00695c;
   color: white;
 }
+
+.image {
+  max-height: 20rem;
+}
+
+.image img {
+  height: 100%;
+}

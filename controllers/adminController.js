@@ -11,9 +11,7 @@ exports.getAddProduct = (req, res) => {
 
 exports.storeProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
-  const product = new Product(null, title, imageUrl, description, price);
-  product
-    .save()
+  Product.create({ title, imageUrl, price, description })
     .then(() => {
       res.redirect('/');
     })
@@ -24,45 +22,58 @@ exports.storeProduct = (req, res) => {
 
 exports.getUpdateProduct = (req, res) => {
   const { productId } = req.params;
-  Product.findById(productId, product => {
-    if (!product) {
-      return res.redirect('/');
-    }
-    res.render('admin-add-product', {
-      docTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      product,
-      editing: true,
+  Product.findByPk(productId)
+    .then(product => {
+      if (!product) {
+        return res.redirect('/');
+      }
+      res.render('admin-add-product', {
+        docTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        product,
+        editing: true,
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  });
 };
 
 exports.updateProduct = (req, res) => {
   const { productId, title, imageUrl, price, description } = req.body;
-  const updatedProduct = new Product(
-    productId,
-    title,
-    imageUrl,
-    description,
-    price
-  );
-  updatedProduct.save();
-  res.redirect('/admin/products');
+  Product.findByPk(productId)
+    .then(product => {
+      product.title = title;
+      product.imageUrl = imageUrl;
+      product.price = price;
+      product.description = description;
+      return product.save();
+    })
+    .then(() => {
+      res.redirect('/admin/products');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.deleteProduct = (req, res) => {
   const { productId } = req.body;
-  Product.deleteById(productId);
+  Product.destroy({ where: { id: productId } });
   res.redirect('/admin/products');
 };
 
 exports.getProducts = (req, res) => {
-  Product.fetchAll(products => {
-    // Rendering pug template
-    res.render('admin-products', {
-      products,
-      docTitle: 'Admin Products',
-      path: '/admin/products',
+  Product.findAll()
+    .then(products => {
+      // Rendering pug template
+      res.render('admin-products', {
+        products,
+        docTitle: 'Admin Products',
+        path: '/admin/products',
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  });
 };
