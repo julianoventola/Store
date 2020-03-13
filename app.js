@@ -20,6 +20,18 @@ app.use(express.urlencoded({ extended: false }));
 // Static css folder for pages
 app.use(express.static(path.resolve('./public')));
 
+// 'Auth' Middleware
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // --> ROUTES <--
 app.use(routes);
 
@@ -29,7 +41,20 @@ User.hasMany(Product);
 
 sequelizeConn
   // 'force' will rewrite the models - not indicated in production!
-  .sync({ force: true })
+  //.sync({ force: true })
+  .sync()
+  .then(() => {
+    return User.findByPk(1);
+  })
+  .then(user => {
+    if (!user) {
+      return User.create({
+        name: 'Juliano Ventola',
+        email: 'juliano@gmail.com',
+      });
+    }
+    return user;
+  })
   .then(() => {
     // Listen to port 3000
     app.listen(3000, () => {

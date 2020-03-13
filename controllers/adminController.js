@@ -11,9 +11,10 @@ exports.getAddProduct = (req, res) => {
 
 exports.storeProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
-  Product.create({ title, imageUrl, price, description })
+  req.user
+    .createProduct({ title, imageUrl, price, description })
     .then(() => {
-      res.redirect('/');
+      res.redirect('/admin/products');
     })
     .catch(err => {
       console.log(err);
@@ -22,8 +23,10 @@ exports.storeProduct = (req, res) => {
 
 exports.getUpdateProduct = (req, res) => {
   const { productId } = req.params;
-  Product.findByPk(productId)
-    .then(product => {
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then(products => {
+      const product = products[0];
       if (!product) {
         return res.redirect('/');
       }
@@ -64,7 +67,8 @@ exports.deleteProduct = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then(products => {
       // Rendering pug template
       res.render('admin-products', {
