@@ -1,7 +1,11 @@
 const path = require('path');
 const express = require('express');
 const routes = require('./routes/routes');
-const sequelizeConn = require('./config/database');
+
+// Models
+const sequelizeConn = require('./config/database'); // Sequelize connection
+const Product = require('./models/product');
+const User = require('./models/user');
 
 // Create server
 const app = express();
@@ -19,9 +23,14 @@ app.use(express.static(path.resolve('./public')));
 // --> ROUTES <--
 app.use(routes);
 
+// Model's relationship
+Product.belongsTo(User), { constraints: true, onDelete: 'CASCADE' };
+User.hasMany(Product);
+
 sequelizeConn
-  .sync()
-  .then(result => {
+  // 'force' will rewrite the models - not indicated in production!
+  .sync({ force: true })
+  .then(() => {
     // Listen to port 3000
     app.listen(3000, () => {
       console.log('Server running on port 3000');
