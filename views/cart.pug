@@ -6,10 +6,15 @@ block content
     //- Check if there is any product
     if products.length > 0
       each product in products
-        p #{product.productData.title} (#{product.qty})    
-        form(action="/cart-delete-item" method="post")
-          button.btn(type="submit") Delete
-          - var productId = product.productData.id
-          input(type="hidden", name="productId" value=productId)
+        .centered
+          p #{product.title} (#{product.cartItem.quantity})    
+          form(action="/cart-delete-item" method="post")
+            button.btn(type="submit") Delete
+            - var productId = product.id
+            input(type="hidden", name="productId" value=productId)
+      hr
+      .centered
+        form(action="/create-order", method="post")
+          button.btn(type="submit") Order now
     else
       h1 Your cart is empty

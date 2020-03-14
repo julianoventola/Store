@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
+
 exports.getIndex = (req, res) => {
   Product.findAll()
     .then(products => {
@@ -44,50 +44,131 @@ exports.getProductById = (req, res) => {
 };
 
 exports.getCart = (req, res) => {
-  Cart.getCart(cart => {
-    Product.fetchAll(products => {
-      const cartProducts = [];
-      for (const product of products) {
-        const productData = cart.products.find(prod => prod.id === product.id);
-        if (productData) {
-          cartProducts.push({ productData: product, qty: productData.qty });
-        }
-      }
-      res.render('cart', {
-        products: cartProducts,
-        docTitle: 'Your cart',
-        path: '/cart',
-      });
+  req.user
+    .getCart()
+    .then(cart => {
+      return cart
+        .getProducts()
+        .then(products => {
+          res.render('cart', {
+            products,
+            docTitle: 'Your cart',
+            path: '/cart',
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  });
 };
 
 exports.postCart = (req, res) => {
   const { productId } = req.body;
-  Product.findById(productId, product => {
-    Cart.addProduct(productId, product.price);
-  });
-  res.redirect('/cart');
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then(cart => {
+      fetchedCart = cart;
+      return cart.getProducts({ where: { id: productId } });
+    })
+    .then(products => {
+      let product;
+      if (products.length > 0) {
+        product = products[0];
+      }
+      let newQuantity = 1;
+      if (product) {
+        const oldQuantity = product.cartItem.quantity;
+        newQuantity = oldQuantity + 1;
+        return fetchedCart.addProduct(product, {
+          through: { quantity: newQuantity },
+        });
+      }
+      return Product.findByPk(productId)
+        .then(product => {
+          return fetchedCart.addProduct(product, {
+            through: { quantity: newQuantity },
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    })
+    .then(() => {
+      res.redirect('/cart');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.postCartDeleteProduct = (req, res) => {
   const { productId } = req.body;
-  Product.findById(productId, product => {
-    Cart.deleteProduct(productId, product.price);
-  });
-  res.redirect('/cart');
+  req.user
+    .getCart()
+    .then(cart => {
+      return cart.getProducts({ where: { id: productId } });
+    })
+    .then(products => {
+      const product = products[0];
+      product.cartItem.destroy();
+    })
+    .then(() => {
+      res.redirect('/cart');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.getOrders = (req, res) => {
-  res.render('orders', {
-    docTitle: 'Orders',
-    path: '/orders',
-  });
+  req.user
+    .getOrders({ include: ['products'] })
+    .then(orders => {
+      res.render('orders', {
+        docTitle: 'Orders',
+        path: '/orders',
+        orders,
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
-exports.getCheckout = (req, res) => {
-  res.render('checkout', {
-    docTitle: 'checkout',
-    path: '/checkout',
-  });
+exports.postOrder = (req, res) => {
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then(cart => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
+    .then(products => {
+      return req.user
+        .createOrder()
+        .then(order => {
+          return order.addProducts(
+            products.map(product => {
+              product.orderItem = { quantity: product.cartItem.quantity };
+              return product;
+            })
+          );
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    })
+    .then(() => {
+      return fetchedCart.setProducts(null);
+    })
+    .then(() => {
+      res.redirect('/orders');
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };

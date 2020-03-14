@@ -13,7 +13,7 @@ router.get('/cart', productController.getCart);
 router.post('/cart', productController.postCart);
 router.post('/cart-delete-item', productController.postCartDeleteProduct);
 router.get('/orders', productController.getOrders);
-router.get('/checkout', productController.getCheckout);
+router.post('/create-order', productController.postOrder);
 
 // ADMIN - PRODUCTS
 router.get('/admin/add-product', adminController.getAddProduct); // Add product - GET
