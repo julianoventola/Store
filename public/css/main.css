@@ -101,11 +101,9 @@ main {
   border: 1px solid #00695c;
   color: #00695c;
   background: white;
-  border-radius: 3px;
+  border-radius: 5px;
   cursor: pointer;
   padding: 0 20px;
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .btn:hover,
